@@ -1,4 +1,5 @@
 package AdmissionManagementSystem;
+
 import java.util.Scanner;
 
 public class Main {
@@ -13,7 +14,6 @@ public class Main {
         System.out.println("       WELCOME TO ADMISSION MANAGEMENT SYSTEM      ");
         System.out.println("===================================================");
 
-        // --- AUTHENTICATION PHASE ---
         while (!isAuthenticated) {
             System.out.println("\n[ Security Check ]");
             System.out.print("Enter Officer Username : ");
@@ -30,7 +30,6 @@ public class Main {
             }
         }
 
-        // --- DASHBOARD PHASE ---
         boolean isRunning = true;
 
         while (isRunning) {
@@ -39,11 +38,13 @@ public class Main {
             System.out.println("===================================================");
             System.out.println("1. Add New Student");
             System.out.println("2. Search Student Info");
-            System.out.println("3. Logout & Exit");
-            System.out.print("\nSelect an option (1-3): ");
+            System.out.println("3. Assign Course to Student");
+            System.out.println("4. View Advised Courses");
+            System.out.println("5. Logout & Exit");
+            System.out.print("\nSelect an option (1-5): ");
 
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Clears the input buffer
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
@@ -60,7 +61,7 @@ public class Main {
                     String pass = scanner.nextLine();
                     System.out.print("Enter CGPA: ");
                     double cgpa = scanner.nextDouble();
-                    scanner.nextLine(); // Clears the input buffer
+                    scanner.nextLine();
 
                     Student newStudent = new Student(id, name, program, batch, pass, cgpa);
                     fileManager.saveStudent(newStudent);
@@ -82,12 +83,33 @@ public class Main {
                     break;
 
                 case 3:
+                    System.out.println("\n--- ASSIGN COURSE ---");
+                    System.out.print("Enter Student ID: ");
+                    String assignId = scanner.nextLine();
+
+                    if (fileManager.searchStudentById(assignId) != null) {
+                        System.out.print("Enter Course Code/Name (e.g., MAT261, DSA): ");
+                        String courseName = scanner.nextLine();
+                        fileManager.assignCourse(assignId, courseName);
+                    } else {
+                        System.out.println("\n[ERROR] Cannot assign course. No student found with ID: " + assignId);
+                    }
+                    break;
+
+                case 4:
+                    System.out.println("\n--- VIEW ADVISED COURSES ---");
+                    System.out.print("Enter Student ID to view courses: ");
+                    String courseSearchId = scanner.nextLine();
+                    fileManager.displayAdvisedCourses(courseSearchId);
+                    break;
+
+                case 5:
                     System.out.println("\nLogging out... Have a great day!");
                     isRunning = false;
                     break;
 
                 default:
-                    System.out.println("\n[!] Invalid Option! Please choose 1, 2, or 3.");
+                    System.out.println("\n[!] Invalid Option! Please choose a number between 1 and 5.");
             }
         }
 
